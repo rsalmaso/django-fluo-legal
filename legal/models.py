@@ -184,7 +184,7 @@ class TermsOfService(models.I18NModel):
     )
 
     class Meta:
-        ordering = ("-date_begin", "version",)
+        ordering = ("-date_begin", "-version",)
         verbose_name = _('TermsOfService')
         verbose_name_plural = _('TermsOfService')
 
