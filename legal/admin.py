@@ -58,6 +58,7 @@ class TermsOfServiceAdmin(admin.ModelAdmin):
     form = TermsOfServiceAdminForm
     inlines = (TermsOfServiceTranslationInline,)
     filter_horizontal = ('options',)
+    list_display = ('version', 'status', 'date_begin', 'date_end',)
 admin.site.register(TermsOfService, TermsOfServiceAdmin)
 
 
