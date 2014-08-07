@@ -111,7 +111,7 @@ class TermsOfServiceManager(models.Manager):
     @property
     def current(self):
         try:
-            return self.published(order_by='-date_begin')[0]
+            return self.published()[0]
         except (self.model.DoesNotExist, IndexError):
             raise NoActiveTermsOfService('Please create an active Terms-of-Service')
 
