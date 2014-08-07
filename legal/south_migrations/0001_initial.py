@@ -23,11 +23,39 @@
 from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
+from django.db import models
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Option'
+        db.create_table(u'legal_option', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('ordering', self.gf('fluo.db.models.fields.OrderField')(default=0, blank=True)),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
+            ('required', self.gf('django.db.models.fields.BooleanField')()),
+            ('label', self.gf('django.db.models.fields.TextField')()),
+            ('error_message', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal(u'legal', ['Option'])
+
+        # Adding unique constraint on 'Option', fields ['ordering', 'key']
+        db.create_unique(u'legal_option', ['ordering', 'key'])
+
+        # Adding model 'OptionTranslation'
+        db.create_table(u'legal_optiontranslation', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('language', self.gf('django.db.models.fields.CharField')(max_length=5, db_index=True)),
+            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'translations', to=orm['legal.Option'])),
+            ('label', self.gf('django.db.models.fields.TextField')()),
+            ('error_message', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal(u'legal', ['OptionTranslation'])
+
+        # Adding unique constraint on 'OptionTranslation', fields ['parent', 'language']
+        db.create_unique(u'legal_optiontranslation', ['parent_id', 'language'])
+
         # Adding model 'TermsOfService'
         db.create_table(u'legal_termsofservice', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -41,6 +69,15 @@ class Migration(SchemaMigration):
             ('human_text', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
         ))
         db.send_create_signal(u'legal', ['TermsOfService'])
+
+        # Adding M2M table for field options on 'TermsOfService'
+        m2m_table_name = db.shorten_name(u'legal_termsofservice_options')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('termsofservice', models.ForeignKey(orm[u'legal.termsofservice'], null=False)),
+            ('option', models.ForeignKey(orm[u'legal.option'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['termsofservice_id', 'option_id'])
 
         # Adding model 'TermsOfServiceTranslation'
         db.create_table(u'legal_termsofservicetranslation', (
@@ -70,13 +107,22 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'legal', ['UserAgreement'])
 
-        # Adding unique constraint on 'UserAgreement', fields ['user', 'tos', 'created_at']
-        db.create_unique(u'legal_useragreement', ['user_id', 'tos_id', 'created_at'])
+        # Adding unique constraint on 'UserAgreement', fields ['user', 'tos']
+        db.create_unique(u'legal_useragreement', ['user_id', 'tos_id'])
+
+        # Adding model 'UserAgreementOption'
+        db.create_table(u'legal_useragreementoption', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'options', to=orm['legal.UserAgreement'])),
+            ('option', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'user_agreements', to=orm['legal.Option'])),
+            ('value', self.gf('django.db.models.fields.BooleanField')()),
+        ))
+        db.send_create_signal(u'legal', ['UserAgreementOption'])
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'UserAgreement', fields ['user', 'tos', 'created_at']
-        db.delete_unique(u'legal_useragreement', ['user_id', 'tos_id', 'created_at'])
+        # Removing unique constraint on 'UserAgreement', fields ['user', 'tos']
+        db.delete_unique(u'legal_useragreement', ['user_id', 'tos_id'])
 
         # Removing unique constraint on 'TermsOfServiceTranslation', fields ['human_title', 'human_text']
         db.delete_unique(u'legal_termsofservicetranslation', ['human_title', 'human_text'])
@@ -84,14 +130,32 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'TermsOfServiceTranslation', fields ['language', 'parent']
         db.delete_unique(u'legal_termsofservicetranslation', ['language', 'parent_id'])
 
+        # Removing unique constraint on 'OptionTranslation', fields ['parent', 'language']
+        db.delete_unique(u'legal_optiontranslation', ['parent_id', 'language'])
+
+        # Removing unique constraint on 'Option', fields ['ordering', 'key']
+        db.delete_unique(u'legal_option', ['ordering', 'key'])
+
+        # Deleting model 'Option'
+        db.delete_table(u'legal_option')
+
+        # Deleting model 'OptionTranslation'
+        db.delete_table(u'legal_optiontranslation')
+
         # Deleting model 'TermsOfService'
         db.delete_table(u'legal_termsofservice')
+
+        # Removing M2M table for field options on 'TermsOfService'
+        db.delete_table(db.shorten_name(u'legal_termsofservice_options'))
 
         # Deleting model 'TermsOfServiceTranslation'
         db.delete_table(u'legal_termsofservicetranslation')
 
         # Deleting model 'UserAgreement'
         db.delete_table(u'legal_useragreement')
+
+        # Deleting model 'UserAgreementOption'
+        db.delete_table(u'legal_useragreementoption')
 
 
     models = {
@@ -142,6 +206,23 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        u'legal.option': {
+            'Meta': {'ordering': "(u'ordering',)", 'unique_together': "((u'ordering', u'key'),)", 'object_name': 'Option'},
+            'error_message': ('django.db.models.fields.TextField', [], {}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
+            'label': ('django.db.models.fields.TextField', [], {}),
+            'ordering': ('fluo.db.models.fields.OrderField', [], {'default': '0', 'blank': 'True'}),
+            'required': ('django.db.models.fields.BooleanField', [], {})
+        },
+        u'legal.optiontranslation': {
+            'Meta': {'unique_together': "((u'parent', u'language'),)", 'object_name': 'OptionTranslation'},
+            'error_message': ('django.db.models.fields.TextField', [], {}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'label': ('django.db.models.fields.TextField', [], {}),
+            'language': ('django.db.models.fields.CharField', [], {'max_length': '5', 'db_index': 'True'}),
+            'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'translations'", 'to': u"orm['legal.Option']"})
+        },
         u'legal.termsofservice': {
             'Meta': {'ordering': "(u'-date_begin', u'version')", 'object_name': 'TermsOfService'},
             'date_begin': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -149,6 +230,7 @@ class Migration(SchemaMigration):
             'human_text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'human_title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'options': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['legal.Option']", 'null': 'True', 'blank': 'True'}),
             'status': ('fluo.db.models.fields.StatusField', [], {'default': "u'draft'"}),
             'text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
@@ -165,12 +247,19 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'})
         },
         u'legal.useragreement': {
-            'Meta': {'ordering': "[u'-created_at']", 'unique_together': "((u'user', u'tos', u'created_at'),)", 'object_name': 'UserAgreement'},
+            'Meta': {'ordering': "[u'-created_at']", 'unique_together': "((u'user', u'tos'),)", 'object_name': 'UserAgreement'},
             'created_at': ('fluo.db.models.fields.CreationDateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_modified_at': ('fluo.db.models.fields.ModificationDateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'tos': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'terms'", 'to': u"orm['legal.TermsOfService']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreement'", 'to': u"orm['accounts.User']"})
+        },
+        u'legal.useragreementoption': {
+            'Meta': {'object_name': 'UserAgreementOption'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'option': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreements'", 'to': u"orm['legal.Option']"}),
+            'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'options'", 'to': u"orm['legal.UserAgreement']"}),
+            'value': ('django.db.models.fields.BooleanField', [], {})
         }
     }
 

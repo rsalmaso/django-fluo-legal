@@ -35,6 +35,57 @@ class NoActiveTermsOfService(ValidationError):
         pass
 
 
+@python_2_unicode_compatible
+class Option(models.I18NModel, models.OrderedModel):
+    key = models.CharField(
+        max_length=255,
+        db_index=True,
+        verbose_name=_('key'),
+    )
+    required = models.BooleanField(
+        verbose_name=_('required'),
+    )
+    label = models.TextField(
+        verbose_name=_('label'),
+    )
+    error_message = models.TextField(
+        verbose_name=_('error message'),
+    )
+
+    class Meta:
+        ordering = ('ordering',)
+        unique_together = ('ordering', 'key',)
+        verbose_name = _('option')
+        verbose_name_plural = _('options')
+
+    def __str__(self):
+        return self.key
+
+
+@python_2_unicode_compatible
+class OptionTranslation(models.TranslationModel):
+    parent = models.ForeignKey(
+        Option,
+        db_index=True,
+        related_name='translations',
+        verbose_name=_('option'),
+    )
+    label = models.TextField(
+        verbose_name=_('label'),
+    )
+    error_message = models.TextField(
+        verbose_name=_('error message'),
+    )
+
+    class Meta:
+        unique_together = ('parent', 'language',)
+        verbose_name = _('translation')
+        verbose_name_plural = _('translations')
+
+    def __str__(self):
+        return self.key
+
+
 class TermsOfServiceManager(models.Manager):
     def _filter(self, status, order_by=None):
         now = timezone.now()
@@ -124,6 +175,12 @@ class TermsOfService(models.I18NModel):
         blank=True,
         default='',
         help_text=_('human readable tos text'),
+    )
+    options = models.ManyToManyField(
+        Option,
+        blank=True,
+        null=True,
+        verbose_name=_('options'),
     )
 
     class Meta:
@@ -226,7 +283,7 @@ class UserAgreement(models.TimestampModel):
     )
 
     class Meta:
-        unique_together = ('user', 'tos', 'created_at')
+        unique_together = ('user', 'tos',)
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -234,6 +291,32 @@ class UserAgreement(models.TimestampModel):
             'user': self.user.username,
             'tos': self.tos,
             'when': self.created_at,
+        }
+
+
+@python_2_unicode_compatible
+class UserAgreementOption(models.Model):
+    parent = models.ForeignKey(
+        UserAgreement,
+        db_index=True,
+        related_name='options',
+        verbose_name=_('user agreement'),
+    )
+    option = models.ForeignKey(
+        Option,
+        db_index=True,
+        related_name='user_agreements',
+        verbose_name=_('user agreement'),
+    )
+    value = models.BooleanField(
+        verbose_name=_('value'),
+    )
+
+    def __str__(self):
+        return '%(version)s %(option)s: %(value)s' % {
+            'version': self.parent.tos.version,
+            'option': self.option,
+            'value': self.value,
         }
 
 

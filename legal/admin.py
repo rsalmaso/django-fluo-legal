@@ -24,10 +24,25 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from django.conf import settings
 from fluo import admin
 from fluo import forms
-from .models import TermsOfService, TermsOfServiceTranslation, UserAgreement
+from .models import Option, OptionTranslation, TermsOfService, TermsOfServiceTranslation, UserAgreement, UserAgreementOption
 
 
 LANG = len(settings.LANGUAGES)
+
+
+class OptionTranslationInlineForm(forms.ModelForm):
+    pass
+class OptionTranslationInline(admin.StackedInline):
+    form = OptionTranslationInlineForm
+    model = OptionTranslation
+    extra = 0
+    max_num = LANG
+class OptionAdminForm(forms.ModelForm):
+    pass
+class OptionAdmin(admin.ModelAdmin):
+    form = OptionAdminForm
+    inlines = (OptionTranslationInline,)
+admin.site.register(Option, OptionAdmin)
 
 
 class TermsOfServiceTranslationInlineForm(forms.ModelForm):
@@ -42,9 +57,17 @@ class TermsOfServiceAdminForm(forms.ModelForm):
 class TermsOfServiceAdmin(admin.ModelAdmin):
     form = TermsOfServiceAdminForm
     inlines = (TermsOfServiceTranslationInline,)
+    filter_horizontal = ('options',)
 admin.site.register(TermsOfService, TermsOfServiceAdmin)
 
 
+class UserAgreementOptionInlineForm(forms.ModelForm):
+    pass
+class UserAgreementOptionInline(admin.TabularInline):
+    form = UserAgreementOptionInlineForm
+    model = UserAgreementOption
+    def get_max_num(self, request, obj=None, **kwargs):
+        return obj.tos.options.count() if obj is not None else 0
 class UserAgreementAdminForm(forms.ModelForm):
     pass
 class UserAgreementAdmin(admin.ModelAdmin):
@@ -53,5 +76,5 @@ class UserAgreementAdmin(admin.ModelAdmin):
         'tos': ('pk', 'version',),
         'user': ('pk', 'username', 'first_name', 'last_name', 'email',),
     }
-
+    inlines = (UserAgreementOptionInline,)
 admin.site.register(UserAgreement, UserAgreementAdmin)
