@@ -43,6 +43,7 @@ class Option(models.I18NModel, models.OrderedModel):
         verbose_name=_('key'),
     )
     required = models.BooleanField(
+        default=False,
         verbose_name=_('required'),
     )
     label = models.TextField(
@@ -309,6 +310,7 @@ class UserAgreementOption(models.Model):
         verbose_name=_('user agreement'),
     )
     value = models.BooleanField(
+        default=False,
         verbose_name=_('value'),
     )
 
