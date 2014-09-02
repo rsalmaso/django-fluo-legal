@@ -27,11 +27,11 @@ from fluo import forms
 from .models import TermsOfService, UserAgreement, UserAgreementOption
 
 
-class TermsOfServiceForm(forms.Form):
+class UserAgreementForm(forms.Form):
     def __init__(self, tos, id='tos_%s', widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
         self.tos = tos
         self.id = id
-        super(TermsOfServiceForm, self).__init__(*args, **kwargs)
+        super(UserAgreementForm, self).__init__(*args, **kwargs)
 
         # accept general TermsOfService
         tos_id = id.replace('_%s', '')
