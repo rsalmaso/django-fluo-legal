@@ -46,10 +46,16 @@ class Option(models.I18NModel, models.OrderedModel):
         default=False,
         verbose_name=_('required'),
     )
+    default = models.BooleanField(
+        default=False,
+        verbose_name=_('default value'),
+    )
     label = models.TextField(
         verbose_name=_('label'),
     )
     error_message = models.TextField(
+        blank=True,
+        default='',
         verbose_name=_('error message'),
     )
 
@@ -75,6 +81,8 @@ class OptionTranslation(models.TranslationModel):
         verbose_name=_('label'),
     )
     error_message = models.TextField(
+        blank=True,
+        default='',
         verbose_name=_('error message'),
     )
 

@@ -35,8 +35,9 @@ class Migration(SchemaMigration):
             ('ordering', self.gf('fluo.db.models.fields.OrderField')(default=0, blank=True)),
             ('key', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
             ('required', self.gf('django.db.models.fields.BooleanField')()),
+            ('default', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('label', self.gf('django.db.models.fields.TextField')()),
-            ('error_message', self.gf('django.db.models.fields.TextField')()),
+            ('error_message', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
         ))
         db.send_create_signal(u'legal', ['Option'])
 
@@ -49,7 +50,7 @@ class Migration(SchemaMigration):
             ('language', self.gf('django.db.models.fields.CharField')(max_length=5, db_index=True)),
             ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'translations', to=orm['legal.Option'])),
             ('label', self.gf('django.db.models.fields.TextField')()),
-            ('error_message', self.gf('django.db.models.fields.TextField')()),
+            ('error_message', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
         ))
         db.send_create_signal(u'legal', ['OptionTranslation'])
 
@@ -208,7 +209,8 @@ class Migration(SchemaMigration):
         },
         u'legal.option': {
             'Meta': {'ordering': "(u'ordering',)", 'unique_together': "((u'ordering', u'key'),)", 'object_name': 'Option'},
-            'error_message': ('django.db.models.fields.TextField', [], {}),
+            'error_message': ('django.db.models.fields.TextField', [], {'default': False, 'blank':True}),
+            'default': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'label': ('django.db.models.fields.TextField', [], {}),
@@ -217,7 +219,7 @@ class Migration(SchemaMigration):
         },
         u'legal.optiontranslation': {
             'Meta': {'unique_together': "((u'parent', u'language'),)", 'object_name': 'OptionTranslation'},
-            'error_message': ('django.db.models.fields.TextField', [], {}),
+            'error_message': ('django.db.models.fields.TextField', [], {'default': False, 'blank':True}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.TextField', [], {}),
             'language': ('django.db.models.fields.CharField', [], {'max_length': '5', 'db_index': 'True'}),
