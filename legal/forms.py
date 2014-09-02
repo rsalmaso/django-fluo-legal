@@ -28,7 +28,7 @@ from .models import TermsOfService, UserAgreement, UserAgreementOption
 
 
 class UserAgreementForm(forms.Form):
-    def __init__(self, tos, id='tos_%s', widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
+    def __init__(self, request, tos, id='tos_%s', widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
         self.tos = tos
         self.id = id
         super(UserAgreementForm, self).__init__(*args, **kwargs)
