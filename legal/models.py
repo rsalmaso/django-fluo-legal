@@ -231,6 +231,14 @@ class TermsOfService(models.I18NModel):
         self.status = TermsOfService.DRAFT
         self.save(*args, **kwargs)
 
+    @property
+    def prev(self):
+        try:
+            tos = TermsOfService.objects.published()[1]
+        except IndexError:
+            raise TermsOfService.DoesNotExist()
+        return tos
+
 
 @python_2_unicode_compatible
 class TermsOfServiceTranslation(models.TranslationModel):
