@@ -142,11 +142,10 @@ class TermsOfService(models.I18NModel):
         default=DRAFT,
         help_text=_('If should be displayed or not.'),
     )
-    version = models.DecimalField(
-        db_index=True,
+    version = models.CharField(
+        max_length=15,
         unique=True,
-        max_digits=5,
-        decimal_places=2,
+        db_index=True,
         verbose_name=_('version'),
     )
     date_begin = models.DateTimeField(

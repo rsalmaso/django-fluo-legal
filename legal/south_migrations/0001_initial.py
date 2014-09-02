@@ -61,7 +61,7 @@ class Migration(SchemaMigration):
         db.create_table(u'legal_termsofservice', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('status', self.gf('fluo.db.models.fields.StatusField')(default=u'draft')),
-            ('version', self.gf('django.db.models.fields.DecimalField')(unique=True, max_digits=5, decimal_places=2, db_index=True)),
+            ('version', self.gf('django.db.models.fields.CharField')(unique=True, max_length=15, db_index=True)),
             ('date_begin', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('date_end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('title', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255, blank=True)),
@@ -236,7 +236,7 @@ class Migration(SchemaMigration):
             'status': ('fluo.db.models.fields.StatusField', [], {'default': "u'draft'"}),
             'text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
-            'version': ('django.db.models.fields.DecimalField', [], {'unique': 'True', 'max_digits': '5', 'decimal_places': '2', 'db_index': 'True'})
+            'version': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15', 'db_index': 'True'})
         },
         u'legal.termsofservicetranslation': {
             'Meta': {'unique_together': "((u'language', u'parent'), (u'human_title', u'human_text'))", 'object_name': 'TermsOfServiceTranslation'},
