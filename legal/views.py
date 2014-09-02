@@ -24,8 +24,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, Http404
+from django.contrib import messages
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from fluo.views import View
-from .models import TermsOfService
+from . import forms
+from .models import TermsOfService, UserAgreement
 
 
 class IndexView(View):
@@ -43,3 +46,64 @@ class TermsOfServiceView(View):
         return render(request, 'legal/terms.html', {
             'tos': tos,
         })
+
+class UserAgreementBaseView(View):
+    form = forms.UserAgreementForm
+    template_name = None
+    message = None
+
+    def initials(self, request, user, instance=None):
+        initial = {}
+        kwargs = {}
+        tos = TermsOfService.objects.current
+        try:
+            ua = UserAgreement.objects.get(user=user, tos=tos.prev)
+            for option in ua.options.all():
+                kwargs[option.option.key] = option.value
+        except TermsOfService.DoesNotExist:
+            pass
+        for option in tos.options.all():
+            initial["tos_%s" % option.key] = kwargs.get(option.key, option.default)
+        return initial
+
+    def context(self, request, user):
+        return {}
+
+    def get_form(self, **kwargs):
+        return self.form(**kwargs)
+
+    def get(self, request):
+        initial = self.initials(request, request.user)
+        tos = TermsOfService.objects.current
+        form = self.get_form(request=request, tos=tos, initial=initial)
+
+        context = self.context(request, request.user)
+        context.update({
+            'form': form,
+            'tos': tos,
+            'complete': request.GET.get('complete', '') == 'true',
+        })
+
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        tos = TermsOfService.objects.current
+        form = self.get_form(request=request, tos=tos, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            instance = form.save(request=request)
+            initial = self.initials(request, request.user, instance=instance)
+            form = self.get_form(request=request, tos=tos, initial=initial)
+            next = request.GET.get(REDIRECT_FIELD_NAME, None)
+            if next:
+                return HttpResponseRedirect(next)
+            if self.message:
+                messages.success(request, self.message)
+
+        context = self.context(request, request.user)
+        context.update({
+            'form': form,
+            'tos': tos,
+            'complete': request.GET.get('complete', '') == 'true',
+        })
+
+        return render(request, self.template_name, context)
