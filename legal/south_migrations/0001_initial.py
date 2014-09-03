@@ -34,7 +34,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('ordering', self.gf('fluo.db.models.fields.OrderField')(default=0, blank=True)),
             ('key', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
-            ('required', self.gf('django.db.models.fields.BooleanField')()),
+            ('required', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('default', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('label', self.gf('django.db.models.fields.TextField')()),
             ('error_message', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
@@ -64,10 +64,12 @@ class Migration(SchemaMigration):
             ('version', self.gf('django.db.models.fields.CharField')(unique=True, max_length=15, db_index=True)),
             ('date_begin', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('date_end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('label', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
             ('title', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
             ('human_title', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255, blank=True)),
             ('human_text', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
+            ('changelog', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
         ))
         db.send_create_signal(u'legal', ['TermsOfService'])
 
@@ -85,10 +87,12 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('language', self.gf('django.db.models.fields.CharField')(max_length=5, db_index=True)),
             ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'translations', to=orm['legal.TermsOfService'])),
+            ('label', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
             ('title', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
             ('human_title', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255, blank=True)),
             ('human_text', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
+            ('changelog', self.gf('django.db.models.fields.TextField')(default=u'', blank=True)),
         ))
         db.send_create_signal(u'legal', ['TermsOfServiceTranslation'])
 
@@ -116,7 +120,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'options', to=orm['legal.UserAgreement'])),
             ('option', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'user_agreements', to=orm['legal.Option'])),
-            ('value', self.gf('django.db.models.fields.BooleanField')()),
+            ('value', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'legal', ['UserAgreementOption'])
 
@@ -211,11 +215,12 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "(u'ordering',)", 'unique_together': "((u'ordering', u'key'),)", 'object_name': 'Option'},
             'error_message': ('django.db.models.fields.TextField', [], {'default': False, 'blank':True}),
             'default': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'error_message': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'label': ('django.db.models.fields.TextField', [], {}),
             'ordering': ('fluo.db.models.fields.OrderField', [], {'default': '0', 'blank': 'True'}),
-            'required': ('django.db.models.fields.BooleanField', [], {})
+            'required': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'legal.optiontranslation': {
             'Meta': {'unique_together': "((u'parent', u'language'),)", 'object_name': 'OptionTranslation'},
@@ -226,12 +231,14 @@ class Migration(SchemaMigration):
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'translations'", 'to': u"orm['legal.Option']"})
         },
         u'legal.termsofservice': {
-            'Meta': {'ordering': "(u'-date_begin', u'version')", 'object_name': 'TermsOfService'},
+            'Meta': {'ordering': "(u'-date_begin', u'-version')", 'object_name': 'TermsOfService'},
+            'changelog': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'date_begin': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'date_end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'human_text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'human_title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'label': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'options': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['legal.Option']", 'null': 'True', 'blank': 'True'}),
             'status': ('fluo.db.models.fields.StatusField', [], {'default': "u'draft'"}),
             'text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
@@ -240,9 +247,11 @@ class Migration(SchemaMigration):
         },
         u'legal.termsofservicetranslation': {
             'Meta': {'unique_together': "((u'language', u'parent'), (u'human_title', u'human_text'))", 'object_name': 'TermsOfServiceTranslation'},
+            'changelog': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'human_text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'human_title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'label': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'max_length': '5', 'db_index': 'True'}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'translations'", 'to': u"orm['legal.TermsOfService']"}),
             'text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
@@ -261,7 +270,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'option': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreements'", 'to': u"orm['legal.Option']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'options'", 'to': u"orm['legal.UserAgreement']"}),
-            'value': ('django.db.models.fields.BooleanField', [], {})
+            'value': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         }
     }
 

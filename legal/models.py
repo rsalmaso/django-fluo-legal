@@ -34,7 +34,6 @@ from fluo.db import models
 class NoActiveTermsOfService(ValidationError):
         pass
 
-
 @python_2_unicode_compatible
 class Option(models.I18NModel, models.OrderedModel):
     key = models.CharField(
@@ -160,6 +159,11 @@ class TermsOfService(models.I18NModel):
         verbose_name=_('Date end'),
         help_text=_('When TOS ends to be effective.'),
     )
+    label = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_('label'),
+    )
     title = models.CharField(
         max_length=255,
         blank=True,
@@ -179,10 +183,16 @@ class TermsOfService(models.I18NModel):
         help_text=_('human readable tos title'),
     )
     human_text = models.TextField(
-        verbose_name=_('human text'),
         blank=True,
         default='',
+        verbose_name=_('human text'),
         help_text=_('human readable tos text'),
+    )
+    changelog = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_('changelog'),
+        help_text=_('difference(s) from previous version'),
     )
     options = models.ManyToManyField(
         Option,
@@ -247,6 +257,11 @@ class TermsOfServiceTranslation(models.TranslationModel):
         related_name='translations',
         verbose_name=_('TermsOfService'),
     )
+    label = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_('label'),
+    )
     title = models.CharField(
         max_length=255,
         blank=True,
@@ -272,6 +287,12 @@ class TermsOfServiceTranslation(models.TranslationModel):
         default='',
         verbose_name=_('human text'),
         help_text=_('human readable tos text'),
+    )
+    changelog = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_('changelog'),
+        help_text=_('difference(s) from previous version'),
     )
 
     class Meta:
