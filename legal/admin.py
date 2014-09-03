@@ -44,7 +44,13 @@ class OptionAdmin(admin.ModelAdmin):
     inlines = (OptionTranslationInline,)
 admin.site.register(Option, OptionAdmin)
 
-
+class CopyTermsOfService(admin.CopyObject):
+    def update(self, request, instance, original):
+        instance.version = ' '.join(['+ ', original.version])
+        instance.status = TermsOfService.DRAFT
+    def update_m2m(self, request, instance, original):
+        for option in original.options.all():
+            instance.options.add(option)
 class TermsOfServiceTranslationInlineForm(forms.ModelForm):
     pass
 class TermsOfServiceTranslationInline(admin.StackedInline):
@@ -60,6 +66,7 @@ class TermsOfServiceAdmin(admin.ModelAdmin):
     filter_horizontal = ('options',)
     list_display = ('version', 'status', 'date_begin', 'date_end',)
     list_editable = ('status', 'date_begin', 'date_end',)
+    actions = [ CopyTermsOfService() ]
 admin.site.register(TermsOfService, TermsOfServiceAdmin)
 
 
