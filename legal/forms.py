@@ -28,7 +28,7 @@ from .models import TermsOfService, UserAgreement, UserAgreementOption
 
 
 class UserAgreementForm(forms.Form):
-    def __init__(self, request, tos, id='tos_%s', widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
+    def __init__(self, request, tos, id='tos_%s', options=None, widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
         self.tos = tos
         self.id = id
         super(UserAgreementForm, self).__init__(*args, **kwargs)
@@ -44,8 +44,9 @@ class UserAgreementForm(forms.Form):
             },
         )
 
+        self.options = tos.options.all() if options is None else options
         # accept each TermsOfService Option
-        for option in tos.options.all():
+        for option in self.options:
             self.fields[id % option.key] = forms.BooleanField(
                 required=option.required,
                 label=option.translate().label,
@@ -62,7 +63,7 @@ class UserAgreementForm(forms.Form):
             tos=TermsOfService.objects.current,
         )
         id = self.id
-        for option in self.tos.options.all():
+        for option in self.options:
             UserAgreementOption.objects.create(
                 parent=agreement,
                 option=option,
