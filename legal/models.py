@@ -91,7 +91,7 @@ class OptionTranslation(models.TranslationModel):
         verbose_name_plural = _('translations')
 
     def __str__(self):
-        return self.key
+        return "%s %s translation" % (self.language, self.parent)
 
 
 class TermsOfServiceManager(models.Manager):
