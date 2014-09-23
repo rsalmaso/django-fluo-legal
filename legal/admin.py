@@ -81,6 +81,7 @@ class UserAgreementAdminForm(forms.ModelForm):
     pass
 class UserAgreementAdmin(admin.ModelAdmin):
     form = UserAgreementAdminForm
+    search_fields = ('user__pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email',)
     related_search_fields = {
         'tos': ('pk', 'version',),
         'user': ('pk', 'username', 'first_name', 'last_name', 'email',),
