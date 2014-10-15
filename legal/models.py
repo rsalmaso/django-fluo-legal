@@ -359,7 +359,7 @@ class UserAgreementOption(models.Model):
 
 
 def has_user_agreed_latest_tos(user):
-    return True if UserAgreement.objects.filter(
+    return UserAgreement.objects.filter(
         tos=TermsOfService.objects.current,
         user=user,
-    ) else False
+    ).count() > 0
