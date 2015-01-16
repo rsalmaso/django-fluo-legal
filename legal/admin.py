@@ -22,6 +22,7 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from fluo import admin
 from fluo import forms
 from .models import Option, OptionTranslation, TermsOfService, TermsOfServiceTranslation, UserAgreement, UserAgreementOption
@@ -82,9 +83,19 @@ class UserAgreementAdminForm(forms.ModelForm):
 class UserAgreementAdmin(admin.ModelAdmin):
     form = UserAgreementAdminForm
     search_fields = ('user__pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email',)
+    list_display = ('user', 'created_at', '_version', '_options',)
     related_search_fields = {
         'tos': ('pk', 'version',),
         'user': ('pk', 'username', 'first_name', 'last_name', 'email',),
     }
     inlines = (UserAgreementOptionInline,)
+    def _version(self, obj):
+        return '%s' % obj.tos.version
+    _version.allow_tags = True
+    _version.short_description = _('version')
+    def _options(self, obj):
+        options = ['%s: %s' % (option.option.translate().key, option.value) for option in obj.options.all()]
+        return '<br>'.join(options)
+    _options.allow_tags = True
+    _options.short_description = _('options')
 admin.site.register(UserAgreement, UserAgreementAdmin)
