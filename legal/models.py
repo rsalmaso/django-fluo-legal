@@ -52,6 +52,11 @@ class Option(models.I18NModel, models.OrderedModel):
     label = models.TextField(
         verbose_name=_('label'),
     )
+    description = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('description'),
+    )
     error_message = models.TextField(
         blank=True,
         default='',
@@ -78,6 +83,11 @@ class OptionTranslation(models.TranslationModel):
     )
     label = models.TextField(
         verbose_name=_('label'),
+    )
+    description = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('description'),
     )
     error_message = models.TextField(
         blank=True,
