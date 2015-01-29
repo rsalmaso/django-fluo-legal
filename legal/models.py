@@ -325,7 +325,7 @@ class UserAgreement(models.TimestampModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         db_index=True,
-        related_name='user_agreement',
+        related_name='user_agreements',
         verbose_name=_('user'),
     )
 

@@ -150,12 +150,12 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_modified_at': ('fluo.db.models.fields.ModificationDateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'tos': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'terms'", 'to': u"orm['legal.TermsOfService']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreement'", 'to': u"orm['accounts.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreements'", 'to': u"orm['accounts.User']"})
         },
         u'legal.useragreementoption': {
             'Meta': {'object_name': 'UserAgreementOption'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'option': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreements'", 'to': u"orm['legal.Option']"}),
+            'option': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'user_agreementss'", 'to': u"orm['legal.Option']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'options'", 'to': u"orm['legal.UserAgreement']"}),
             'value': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         }
