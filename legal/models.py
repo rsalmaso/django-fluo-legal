@@ -207,7 +207,6 @@ class TermsOfService(models.I18NModel):
     options = models.ManyToManyField(
         Option,
         blank=True,
-        null=True,
         verbose_name=_('options'),
     )
 

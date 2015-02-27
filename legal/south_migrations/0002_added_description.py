@@ -126,7 +126,7 @@ class Migration(SchemaMigration):
             'human_title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
-            'options': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['legal.Option']", 'null': 'True', 'blank': 'True'}),
+            'options': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['legal.Option']", 'blank': 'True'}),
             'status': ('fluo.db.models.fields.StatusField', [], {'default': "u'draft'"}),
             'text': ('django.db.models.fields.TextField', [], {'default': "u''", 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255', 'blank': 'True'}),
