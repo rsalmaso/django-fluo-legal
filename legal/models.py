@@ -35,7 +35,7 @@ class NoActiveTermsOfService(ValidationError):
         pass
 
 @python_2_unicode_compatible
-class Option(models.I18NModel, models.OrderedModel):
+class Option(models.TimestampModel, models.I18NModel, models.OrderedModel):
     key = models.CharField(
         max_length=255,
         db_index=True,
@@ -135,7 +135,7 @@ class TermsOfServiceManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class TermsOfService(models.I18NModel):
+class TermsOfService(models.TimestampModel, models.I18NModel):
     DRAFT = 'draft'
     PUBLISHED = 'published'
     REVIEW = 'review'
