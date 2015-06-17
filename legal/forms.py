@@ -23,6 +23,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from django.db import transaction
 from django.utils.translation import ugettext as _
+from django.utils.functional import cached_property
 from fluo import forms
 from .models import TermsOfService, UserAgreement, UserAgreementOption
 
@@ -46,8 +47,10 @@ class UserAgreementForm(forms.Form):
 
         self.options = tos.options.all() if options is None else options
         # accept each TermsOfService Option
+        option_key = []
         for option in self.options:
-            self.fields[id % option.key] = forms.BooleanField(
+            key = id % option.key
+            self.fields[key] = forms.BooleanField(
                 required=option.required,
                 label=option.translate().label,
                 widget=widget(attrs=attrs),
@@ -55,6 +58,13 @@ class UserAgreementForm(forms.Form):
                     'required': _("You must agree to the Terms of Service to register"),
                 },
             )
+            option_key.append(key)
+        self.option_keys = option_key
+
+    @cached_property
+    def option_fields(self):
+        return [self[key] for key in self.option_keys]
+
 
     @transaction.atomic
     def save(self, request, user=None, *args, **kwargs):
