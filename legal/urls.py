@@ -21,10 +21,10 @@
 # THE SOFTWARE.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.IndexView(), name='legal-index'),
     url(r'^(?P<version>.+)$', views.TermsOfServiceView(), name='legal-version'),
-)
+]
