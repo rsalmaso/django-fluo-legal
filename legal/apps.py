@@ -21,6 +21,10 @@
 # THE SOFTWARE.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
+from django.apps import AppConfig
+from django.utils.translation import ugettext_lazy as _
 
 
-default_app_config = "legal.apps.LegalConfig"
+class LegalConfig(AppConfig):
+    name = "legal"
+    verbose_name = _("Legal")
