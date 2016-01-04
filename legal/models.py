@@ -78,6 +78,7 @@ class OptionTranslation(models.TranslationModel):
     parent = models.ForeignKey(
         Option,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='translations',
         verbose_name=_('option'),
     )
@@ -263,6 +264,7 @@ class TermsOfServiceTranslation(models.TranslationModel):
     parent = models.ForeignKey(
         TermsOfService,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='translations',
         verbose_name=_('TermsOfService'),
     )
@@ -318,12 +320,14 @@ class UserAgreement(models.TimestampModel):
     tos = models.ForeignKey(
         TermsOfService,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='terms',
         verbose_name=_('tos'),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='user_agreements',
         verbose_name=_('user'),
     )
@@ -345,12 +349,14 @@ class UserAgreementOption(models.Model):
     parent = models.ForeignKey(
         UserAgreement,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='options',
         verbose_name=_('user agreement'),
     )
     option = models.ForeignKey(
         Option,
         db_index=True,
+        on_delete=models.CASCADE,
         related_name='user_agreements',
         verbose_name=_('user agreement'),
     )
