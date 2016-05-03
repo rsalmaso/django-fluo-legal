@@ -25,6 +25,6 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.IndexView(), name='legal-index'),
-    url(r'^(?P<version>.+)$', views.TermsOfServiceView(), name='legal-version'),
+    url(r'^$', views.IndexView.as_view(), name='legal-index'),
+    url(r'^(?P<version>.+)$', views.TermsOfServiceView.as_view(), name='legal-version'),
 ]

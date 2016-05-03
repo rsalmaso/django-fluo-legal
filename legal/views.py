@@ -26,7 +26,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, Http404
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from fluo.views import View
+from django.views.generic import View
 from . import forms
 from .models import TermsOfService, UserAgreement
 
@@ -46,6 +46,7 @@ class TermsOfServiceView(View):
         return render(request, 'legal/terms.html', {
             'tos': tos,
         })
+
 
 class UserAgreementBaseView(View):
     form = forms.UserAgreementForm
