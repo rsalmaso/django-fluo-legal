@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (C) 2007-2016, Raffaele Salmaso <raffaele@salmaso.org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,12 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from fluo.db import models
@@ -34,7 +30,6 @@ from fluo.db import models
 class NoActiveTermsOfService(ValidationError):
         pass
 
-@python_2_unicode_compatible
 class Option(models.TimestampModel, models.I18NModel, models.OrderedModel):
     key = models.CharField(
         max_length=255,
@@ -73,7 +68,6 @@ class Option(models.TimestampModel, models.I18NModel, models.OrderedModel):
         return self.key
 
 
-@python_2_unicode_compatible
 class OptionTranslation(models.TranslationModel):
     parent = models.ForeignKey(
         Option,
@@ -135,7 +129,6 @@ class TermsOfServiceManager(models.Manager):
             raise NoActiveTermsOfService('Please create an active Terms-of-Service')
 
 
-@python_2_unicode_compatible
 class TermsOfService(models.TimestampModel, models.I18NModel):
     DRAFT = 'draft'
     PUBLISHED = 'published'
@@ -240,7 +233,7 @@ class TermsOfService(models.TimestampModel, models.I18NModel):
         now = timezone.now()
         if not self.date_begin and self.status == TermsOfService.PUBLISHED:
             self.date_begin = now
-        super(TermsOfService, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def publish(self, *args, **kwargs):
         self.status = TermsOfService.PUBLISHED
@@ -259,7 +252,6 @@ class TermsOfService(models.TimestampModel, models.I18NModel):
         return tos
 
 
-@python_2_unicode_compatible
 class TermsOfServiceTranslation(models.TranslationModel):
     parent = models.ForeignKey(
         TermsOfService,
@@ -315,7 +307,6 @@ class TermsOfServiceTranslation(models.TranslationModel):
         return self.title
 
 
-@python_2_unicode_compatible
 class UserAgreement(models.TimestampModel):
     tos = models.ForeignKey(
         TermsOfService,
@@ -344,7 +335,6 @@ class UserAgreement(models.TimestampModel):
         }
 
 
-@python_2_unicode_compatible
 class UserAgreementOption(models.Model):
     parent = models.ForeignKey(
         UserAgreement,

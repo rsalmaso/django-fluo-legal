@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (C) 2007-2016, Raffaele Salmaso <raffaele@salmaso.org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.functional import cached_property
@@ -32,7 +29,7 @@ class UserAgreementForm(forms.Form):
     def __init__(self, request, tos, id='tos_%s', options=None, widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
         self.tos = tos
         self.id = id
-        super(UserAgreementForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # accept general TermsOfService
         tos_id = id.replace('_%s', '')
