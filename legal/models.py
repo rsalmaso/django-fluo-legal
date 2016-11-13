@@ -21,10 +21,10 @@
 from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from fluo.db import models
+from fluo.urls import reverse
 
 
 class NoActiveTermsOfService(ValidationError):
