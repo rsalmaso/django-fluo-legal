@@ -19,7 +19,7 @@
 # THE SOFTWARE.
 
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from fluo import admin
 from fluo import forms
 from .models import Option, OptionTranslation, TermsOfService, TermsOfServiceTranslation, UserAgreement, UserAgreementOption

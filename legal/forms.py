@@ -19,7 +19,7 @@
 # THE SOFTWARE.
 
 from django.db import transaction
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.functional import cached_property
 from fluo import forms
 from .models import TermsOfService, UserAgreement, UserAgreementOption
