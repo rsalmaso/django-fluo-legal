@@ -30,34 +30,51 @@ LANG = len(settings.LANGUAGES)
 
 class OptionTranslationInlineForm(forms.ModelForm):
     pass
+
+
 class OptionTranslationInline(admin.StackedInline):
     form = OptionTranslationInlineForm
     model = OptionTranslation
     extra = 0
     max_num = LANG
+
+
 class OptionAdminForm(forms.ModelForm):
     pass
+
+
+@admin.register(Option)
 class OptionAdmin(admin.ModelAdmin):
     form = OptionAdminForm
     inlines = (OptionTranslationInline,)
-admin.site.register(Option, OptionAdmin)
+
 
 class CopyTermsOfService(admin.CopyObject):
     def update(self, request, instance, original):
         instance.version = ' '.join(['+ ', original.version])
         instance.status = TermsOfService.DRAFT
+
     def update_m2m(self, request, instance, original):
         for option in original.options.all():
             instance.options.add(option)
+
+
 class TermsOfServiceTranslationInlineForm(forms.ModelForm):
     pass
+
+
 class TermsOfServiceTranslationInline(admin.StackedInline):
     form = TermsOfServiceTranslationInlineForm
     model = TermsOfServiceTranslation
     extra = 0
     max_num = LANG
+
+
 class TermsOfServiceAdminForm(forms.ModelForm):
     pass
+
+
+@admin.register(TermsOfService)
 class TermsOfServiceAdmin(admin.ModelAdmin):
     form = TermsOfServiceAdminForm
     inlines = (TermsOfServiceTranslationInline,)
@@ -65,18 +82,25 @@ class TermsOfServiceAdmin(admin.ModelAdmin):
     list_display = ('version', 'status', 'date_begin', 'date_end',)
     list_editable = ('status', 'date_begin', 'date_end',)
     actions = [ CopyTermsOfService() ]
-admin.site.register(TermsOfService, TermsOfServiceAdmin)
 
 
 class UserAgreementOptionInlineForm(forms.ModelForm):
     pass
+
+
 class UserAgreementOptionInline(admin.TabularInline):
     form = UserAgreementOptionInlineForm
     model = UserAgreementOption
+
     def get_max_num(self, request, obj=None, **kwargs):
         return obj.tos.options.count() if obj is not None else 0
+
+
 class UserAgreementAdminForm(forms.ModelForm):
     pass
+
+
+@admin.register(UserAgreement)
 class UserAgreementAdmin(admin.ModelAdmin):
     form = UserAgreementAdminForm
     search_fields = ('user__pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email',)
@@ -95,4 +119,3 @@ class UserAgreementAdmin(admin.ModelAdmin):
         return '<br>'.join(options)
     _options.allow_tags = True
     _options.short_description = _('options')
-admin.site.register(UserAgreement, UserAgreementAdmin)
