@@ -22,6 +22,7 @@ from django.db import models, migrations
 import fluo.db.models.fields
 import django.utils.timezone
 from django.conf import settings
+import legal.models
 
 
 class Migration(migrations.Migration):
@@ -55,7 +56,7 @@ class Migration(migrations.Migration):
             name='OptionTranslation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language', models.CharField(db_index=True, max_length=5, verbose_name='language', choices=[('it', 'Italian'), ('en', 'English')])),
+                ('language', models.CharField(db_index=True, max_length=5, verbose_name='language', choices=settings.LANGUAGES)),
                 ('label', models.TextField(verbose_name='label')),
                 ('description', models.TextField(null=True, verbose_name='description', blank=True)),
                 ('error_message', models.TextField(default='', verbose_name='error message', blank=True)),
@@ -72,7 +73,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_at', fluo.db.models.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
                 ('last_modified_at', fluo.db.models.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
-                ('status', fluo.db.models.fields.StatusField(default='draft', help_text='If should be displayed or not.', max_length=10, verbose_name='status', choices=[('draft', 'Draft'), ('review', 'Review'), ('published', 'Published')])),
+                ('status', fluo.db.models.fields.StatusField(default=legal.models.TermsOfService.DRAFT, help_text='If should be displayed or not.', max_length=10, verbose_name='status', choices=legal.models.TermsOfService.STATUS_CHOICES)),
                 ('version', models.CharField(unique=True, max_length=15, verbose_name='version', db_index=True)),
                 ('date_begin', models.DateTimeField(help_text='When TOS begins to be effective.', null=True, verbose_name='date begin', blank=True)),
                 ('date_end', models.DateTimeField(help_text='When TOS ends to be effective.', null=True, verbose_name='Date end', blank=True)),
@@ -94,7 +95,7 @@ class Migration(migrations.Migration):
             name='TermsOfServiceTranslation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language', models.CharField(db_index=True, max_length=5, verbose_name='language', choices=[('it', 'Italian'), ('en', 'English')])),
+                ('language', models.CharField(db_index=True, max_length=5, verbose_name='language', choices=settings.LANGUAGES)),
                 ('label', models.TextField(default='', verbose_name='label', blank=True)),
                 ('title', models.CharField(default='', help_text='legal tos title', max_length=255, verbose_name='legal title', blank=True)),
                 ('text', models.TextField(default='', help_text='legal tos text', verbose_name='legal text', blank=True)),

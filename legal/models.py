@@ -133,15 +133,16 @@ class TermsOfService(models.TimestampModel, models.I18NModel):
     DRAFT = 'draft'
     PUBLISHED = 'published'
     REVIEW = 'review'
+    STATUS_CHOICES = (
+        (DRAFT, _('Draft')),
+        (REVIEW, _('Review')),
+        (PUBLISHED, _('Published')),
+    )
 
     objects = TermsOfServiceManager()
 
     status = models.StatusField(
-        choices=(
-            (DRAFT, _('Draft')),
-            (REVIEW, _('Review')),
-            (PUBLISHED, _('Published')),
-        ),
+        choices=STATUS_CHOICES,
         default=DRAFT,
         help_text=_('If should be displayed or not.'),
     )
