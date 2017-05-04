@@ -30,6 +30,7 @@ from fluo.urls import reverse
 class NoActiveTermsOfService(ValidationError):
         pass
 
+
 class Option(models.TimestampModel, models.I18NModel, models.OrderedModel):
     key = models.CharField(
         max_length=255,
@@ -60,7 +61,7 @@ class Option(models.TimestampModel, models.I18NModel, models.OrderedModel):
 
     class Meta:
         ordering = ('ordering',)
-        unique_together = ('ordering', 'key',)
+        unique_together = ('ordering', 'key')
         verbose_name = _('option')
         verbose_name_plural = _('options')
 
@@ -91,7 +92,7 @@ class OptionTranslation(models.TranslationModel):
     )
 
     class Meta:
-        unique_together = ('parent', 'language',)
+        unique_together = ('parent', 'language')
         verbose_name = _('translation')
         verbose_name_plural = _('translations')
 
@@ -206,7 +207,7 @@ class TermsOfService(models.TimestampModel, models.I18NModel):
     )
 
     class Meta:
-        ordering = ("-date_begin", "-version",)
+        ordering = ("-date_begin", "-version")
         verbose_name = _('TermsOfService')
         verbose_name_plural = _('TermsOfService')
 
@@ -300,7 +301,7 @@ class TermsOfServiceTranslation(models.TranslationModel):
     )
 
     class Meta:
-        unique_together = (('language', 'parent',), ('human_title', 'human_text',),)
+        unique_together = (('language', 'parent'), ('human_title', 'human_text'))
         verbose_name = _('TermsOfService Translation')
         verbose_name_plural = _('TermsOfService Translations')
 
@@ -325,7 +326,7 @@ class UserAgreement(models.TimestampModel):
     )
 
     class Meta:
-        unique_together = ('user', 'tos',)
+        unique_together = ('user', 'tos')
         ordering = ["-created_at"]
 
     def __str__(self):

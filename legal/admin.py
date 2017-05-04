@@ -79,9 +79,9 @@ class TermsOfServiceAdmin(admin.ModelAdmin):
     form = TermsOfServiceAdminForm
     inlines = (TermsOfServiceTranslationInline,)
     filter_horizontal = ('options',)
-    list_display = ('version', 'status', 'date_begin', 'date_end',)
-    list_editable = ('status', 'date_begin', 'date_end',)
-    actions = [ CopyTermsOfService() ]
+    list_display = ('version', 'status', 'date_begin', 'date_end')
+    list_editable = ('status', 'date_begin', 'date_end')
+    actions = [CopyTermsOfService()]
 
 
 class UserAgreementOptionInlineForm(forms.ModelForm):
@@ -103,11 +103,11 @@ class UserAgreementAdminForm(forms.ModelForm):
 @admin.register(UserAgreement)
 class UserAgreementAdmin(admin.ModelAdmin):
     form = UserAgreementAdminForm
-    search_fields = ('user__pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email',)
-    list_display = ('user', 'created_at', '_version', '_options',)
+    search_fields = ('user__pk', 'user__username', 'user__first_name', 'user__last_name', 'user__email')
+    list_display = ('user', 'created_at', '_version', '_options')
     related_search_fields = {
-        'tos': ('pk', 'version',),
-        'user': ('pk', 'username', 'first_name', 'last_name', 'email',),
+        'tos': ('pk', 'version'),
+        'user': ('pk', 'username', 'first_name', 'last_name', 'email'),
     }
     inlines = (UserAgreementOptionInline,)
     def _version(self, obj):
