@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             name='Option',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ordering', fluo.db.models.fields.OrderField(default=0, help_text='Ordered', verbose_name='ordering', blank=True)),
+                ('ordering', fluo.db.models.fields.OrderField(blank=True, db_index=True, default=0, help_text='Ordered', verbose_name='ordering')),
                 ('created_at', fluo.db.models.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
                 ('last_modified_at', fluo.db.models.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
                 ('key', models.CharField(max_length=255, verbose_name='key', db_index=True)),
