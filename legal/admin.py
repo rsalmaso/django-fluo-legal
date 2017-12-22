@@ -20,10 +20,11 @@
 
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from fluo import admin
-from fluo import forms
-from .models import Option, OptionTranslation, TermsOfService, TermsOfServiceTranslation, UserAgreement, UserAgreementOption
+from fluo import admin, forms
 
+from .models import (
+    Option, OptionTranslation, TermsOfService, TermsOfServiceTranslation, UserAgreement, UserAgreementOption,
+)
 
 LANG = len(settings.LANGUAGES)
 
@@ -110,10 +111,12 @@ class UserAgreementAdmin(admin.ModelAdmin):
         'user': ('pk', 'username', 'first_name', 'last_name', 'email'),
     }
     inlines = (UserAgreementOptionInline,)
+
     def _version(self, obj):
         return '%s' % obj.tos.version
     _version.allow_tags = True
     _version.short_description = _('version')
+
     def _options(self, obj):
         options = ['%s: %s' % (option.option.translate().key, option.value) for option in obj.options.all()]
         return '<br>'.join(options)

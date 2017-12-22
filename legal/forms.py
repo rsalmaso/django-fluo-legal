@@ -22,11 +22,12 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.utils.functional import cached_property
 from fluo import forms
+
 from .models import TermsOfService, UserAgreement, UserAgreementOption
 
 
 class UserAgreementForm(forms.Form):
-    def __init__(self, request, tos, id='tos_%s', options=None, widget=forms.CheckboxInput, attrs=None, *args, **kwargs):
+    def __init__(self, request, tos, id='tos_%s', options=None, widget=forms.CheckboxInput, attrs=None, *args, **kwargs):  # noqa: E501
         self.tos = tos
         self.id = id
         super().__init__(*args, **kwargs)

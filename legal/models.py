@@ -18,11 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from fluo.db import models
 from fluo.urls import reverse
 
@@ -103,8 +103,8 @@ class OptionTranslation(models.TranslationModel):
 class TermsOfServiceManager(models.Manager):
     def _filter(self, status, order_by=None):
         now = timezone.now()
-        q1 = Q(Q(date_begin__isnull=True)|Q(date_begin__lte=now))
-        q2 = Q(Q(date_end__isnull=True)|Q(date_end__gte=now))
+        q1 = Q(Q(date_begin__isnull=True) | Q(date_begin__lte=now))
+        q2 = Q(Q(date_end__isnull=True) | Q(date_end__gte=now))
         qs = self.filter(Q(status=status) & q1 & q2)
         if order_by is not None:
             qs = qs.order_by(order_by)

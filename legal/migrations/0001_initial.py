@@ -18,11 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from django.db import models, migrations
-import fluo.db.models.fields
 import django.utils.timezone
-from django.conf import settings
+import fluo.db.models.fields
 import legal.models
+from django.conf import settings
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

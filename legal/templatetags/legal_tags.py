@@ -23,6 +23,7 @@ from django.template.loader import render_to_string
 
 register = template.Library()
 
+
 class CookieLawTag(template.Node):
     """
     Displays cookie law banner only if user has not dismissed it yet.
@@ -49,6 +50,7 @@ class CookieLawTag(template.Node):
         context['legal_cookielaw_js'] = js
         context['legal_cookielaw_css'] = css
         return render_to_string('legal/cookielaw_tag.html', context)
+
 
 @register.tag
 def cookielaw(parser, token):

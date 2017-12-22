@@ -18,12 +18,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, Http404
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
 from fluo.urls import reverse
+
 from . import forms
 from .models import TermsOfService, UserAgreement
 
