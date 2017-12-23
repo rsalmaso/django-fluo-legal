@@ -18,5 +18,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from .version import get_version
+
+VERSION = (1, 0, 0, "alpha", 0)
+
+__version__ = get_version(VERSION)
+__author__ = "Raffaele Salmaso"
+__email__ = "raffaele@salmaso.org"
+
 
 default_app_config = "legal.apps.LegalConfig"
