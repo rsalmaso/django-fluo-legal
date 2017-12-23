@@ -37,19 +37,18 @@ class CookieLawTag(template.Node):
         self.name = name
 
     def render(self, context):
-        banner = self.banner.resolve(context)
-        js = self.js.resolve(context)
-        css = self.css.resolve(context)
-        id = self.id.resolve(context)
         name = self.name.resolve(context)
         if context['request'].COOKIES.get(name, False):
             return ''
-        context['legal_cookielaw_banner'] = banner
-        context['legal_cookielaw_name'] = name
-        context['legal_cookielaw_banner_id'] = id
-        context['legal_cookielaw_js'] = js
-        context['legal_cookielaw_css'] = css
-        return render_to_string('legal/cookielaw_tag.html', context)
+
+        ctx = {
+            'legal_cookielaw_banner': self.banner.resolve(context),
+            'legal_cookielaw_name': name,
+            'legal_cookielaw_banner_id': self.id.resolve(context),
+            'legal_cookielaw_js': self.js.resolve(context),
+            'legal_cookielaw_css': self.css.resolve(context),
+        }
+        return render_to_string('legal/cookielaw_tag.html', ctx)
 
 
 @register.tag
