@@ -369,4 +369,4 @@ def has_user_agreed_latest_tos(user):
     return UserAgreement.objects.filter(
         tos=TermsOfService.objects.current,
         user=user,
-    ).count() > 0
+    ).exists()
